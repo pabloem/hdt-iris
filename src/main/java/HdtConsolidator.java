@@ -47,7 +47,7 @@ public class HdtConsolidator {
     }
   }
 
-  private appendToHdt(String triple) {
+  private void appendToHdt(String triple) {
     // TODO - implement. Add line to HDT file.
     System.out.println(triple);
   }
