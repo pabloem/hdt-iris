@@ -21,9 +21,7 @@ query = {};
 rl.on('line',function(line) {
   query[attList[counter]] = line == '' ? undefined : line;
   counter += 1;
-  console.log(query);
   if(counter < attList.length) return ;
-  console.log("querying...");
   counter = 0;
 
   var readStream = db.getStream(query);
@@ -31,5 +29,6 @@ rl.on('line',function(line) {
     console.log(data.subject+' '+data.predicate+' '+data.object+' .');
   });
   readStream.on('end',function() {
+    console.log('');
   });
 });

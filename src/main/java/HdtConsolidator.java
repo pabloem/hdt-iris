@@ -28,7 +28,6 @@ public class HdtConsolidator {
 
   private void appendAdded() {
     String cmdAdded = levelStreamer + " " + added_db;
-    System.out.println("Appending added...");
     try {
       Process p = Runtime.getRuntime().exec(cmdAdded);
       BufferedReader addedOut = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -41,6 +40,7 @@ public class HdtConsolidator {
       addedInp.flush();
       String line = "";			
       while ((line = addedOut.readLine())!= null) {
+        if(line.length() < 5) break;
         appendToHdt(line);
       }
       addedOut.close();
