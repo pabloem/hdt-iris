@@ -37,7 +37,7 @@ public class HdtConsolidator {
       addedInp.newLine();
       addedInp.newLine();
       String line = "";			
-      while ((line = addedInp.readLine())!= null) {
+      while ((line = addedOut.readLine())!= null) {
         appendToHdt(line);
       }
       addedOut.close();
