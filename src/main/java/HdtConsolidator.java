@@ -41,6 +41,8 @@ public class HdtConsolidator {
       }
       addedOut.close();
       addedInp.close();
+    } catch (Exception e) {
+      e.printStackTrace();
     }
   }
 
