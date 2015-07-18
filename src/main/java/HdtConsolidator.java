@@ -28,13 +28,17 @@ public class HdtConsolidator {
 
   private void appendAdded() {
     String cmdAdded = levelStreamer + " " + added_db;
+    System.out.println("Appending added...");
     try {
       Process p = Runtime.getRuntime().exec(cmdAdded);
       BufferedReader addedOut = new BufferedReader(new InputStreamReader(p.getInputStream()));
       BufferedWriter addedInp = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
-      addedInp.newLine();
-      addedInp.newLine();
-      addedInp.newLine();
+      addedInp.write("\n");
+      addedInp.flush();
+      addedInp.write("\n");
+      addedInp.flush();
+      addedInp.write("\n");
+      addedInp.flush();
       String line = "";			
       while ((line = addedOut.readLine())!= null) {
         appendToHdt(line);
