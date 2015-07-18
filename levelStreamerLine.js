@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 var levelup = require('levelup'),
     levelgraph = require('levelgraph'),
-    readline = require('readline');
+    readline = require('readline'),
+    N3 = require('n3');
 
 var args = process.argv.slice(2);
 if (args.length < 1) {
@@ -15,21 +16,34 @@ var rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
+
+var parser = N3.Parser(/*{format: 'N-Triples'}*/);
+var writer = N3.Writer({format: 'N-Triples'});
 var counter = 0,
 attList = ['subject','predicate','object'],
 query = {};
 rl.on('line',function(line) {
-  query[attList[counter]] = line == '' ? undefined : line;
-  counter += 1;
-  console.log(query);
-  if(counter < attList.length) return ;
-  console.log("querying...");
-  counter = 0;
+  if(line == '') {
+    // Do something about this
+  }
+  //console.log(line);
+  parser.parse(line,function(e,t,pre) {
+    //console.log(t);
+    if(t == null && line != '') return;
+    query.subject = (!t || t.subject == '?') ? undefined : t.subject;
+    query.predicate = (!t || t.predicate == '?') ? undefined : t.predicate;
+    query.object = (!t || t.object == '?') ? undefined : t.object;
 
-  var readStream = db.getStream(query);
-  readStream.on('data',function(data){
-    console.log(data.subject+' '+data.predicate+' '+data.object+' .');
-  });
-  readStream.on('end',function() {
+    //console.log(query);
+    var readStream = db.getStream(query);
+    readStream.on('data',function(data){
+      writer.addTriple(data);
+      //console.log(data.subject+' '+data.predicate+' '+data.object+' .');
+    });
+    readStream.on('end',function() {
+      writer.end(function(e,r){console.log(r);});
+      writer = N3.Writer({format: 'N-Triples'});
+      //console.log('');
+    });
   });
 });
