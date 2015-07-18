@@ -24,7 +24,6 @@ public class HdtConsolidator {
   public void run() {
     String cmdRemoved = levelStreamer + " " + removed_db;
     appendAdded();
-    return 0;
   }
 
   private void appendAdded() {
