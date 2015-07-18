@@ -5,7 +5,7 @@ import java.util.*;
 
 public class HdtConsolidator {
   public static final String rdf2hdt = "./rdf2hdt";
-  public static final String levelStreamer = "./levelStreamer.js";
+  public static final String levelStreamer = "../../../levelStreamer.js";
   public HdtConsolidator(String added, String removed, 
                          String hdt, String output) {
     String cmdAdded = levelStreamer + " " + added;
