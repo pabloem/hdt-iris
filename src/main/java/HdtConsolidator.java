@@ -21,12 +21,13 @@ public class HdtConsolidator {
     hdt_out = output;
   }
 
-  public run() {
+  public void run() {
     String cmdRemoved = levelStreamer + " " + removed_db;
     appendAdded();
+    return 0;
   }
 
-  private appendAdded() {
+  private void appendAdded() {
     String cmdAdded = levelStreamer + " " + added_db;
     try {
       Process p = Runtime.getRuntime().exec(cmdAdded);
