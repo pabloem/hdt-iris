@@ -42,7 +42,7 @@ class LevelGraphStreamer {
     return true;
   }
   public String getTriple() {
-    String line;
+    String line = "";
     try {
       line = stdOut.readLine();
     } catch (IOException e) {
