@@ -32,7 +32,7 @@ public class HdtConsolidator {
     return "/tmp/"+sb.toString();
   }
 
-  private String makeFifo() {
+  private String makeFifo() throws Exception{
     String fifoFile = generateFifoName(6);
     String mkFifoCmd = "mkfifo "+fifoFile;
     Process p = Runtime.getRuntime().exec(mkFifoCmd);
