@@ -70,8 +70,8 @@ public class HdtConsolidator {
       Process p = Runtime.getRuntime().exec(cmdHdt);
       BufferedReader addedOut = new BufferedReader(new InputStreamReader(p.getInputStream()));
       String line = "";			
-      while ((line = lgRmv.getTriple())!= null) {
-        if(rmvDb.contains(line)) continue;
+      while ((line = addedOut.readLine())!= null) {
+        if(lgRmv.contains(line)) continue;
         appendToHdt(line);
       }
     } catch (Exception e) {
