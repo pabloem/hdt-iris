@@ -48,7 +48,7 @@ class LevelGraphStreamer {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    if(line.length() < 5) {
+    if(line == null || line.length() < 5) {
       // A string of less than 5 characters can not be a triple.
       return null;
     }
@@ -63,7 +63,7 @@ class LevelGraphStreamer {
     }
   }
   public void startQuery(String subject,String predicate,String object) {
-    try{ 
+    try{
       stdIn.write(subject+" "+predicate+" "+object+" .\n");
       stdIn.flush();
     } catch (Exception e) {

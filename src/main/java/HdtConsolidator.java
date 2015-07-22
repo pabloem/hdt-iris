@@ -29,7 +29,7 @@ public class HdtConsolidator {
     StringBuilder sb = new StringBuilder( len );
     for( int i = 0; i < len; i++ ) 
       sb.append( AB.charAt( rnd.nextInt(AB.length()) ) );
-    return "/tmp/"+sb.toString();
+    return "/tmp/hdtCon"+sb.toString();
   }
 
   private String makeFifo() throws Exception{
