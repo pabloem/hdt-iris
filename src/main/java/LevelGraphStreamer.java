@@ -1,5 +1,7 @@
 import java.io.*;
 import java.util.*;
+import java.util.regex.*;
+
 class LevelGraphStreamer {
   public static final String levelStreamer = "../../../levelStreamerLine.js";
   private String streamFile;
@@ -12,8 +14,8 @@ class LevelGraphStreamer {
   public void init() {
     String cmd = levelStreamer + " " + streamFile;
     pr = Runtime.getRuntime().exec(cmd);
-    stdOut = new BufferedReader(new InputStreamReader(p.getInputStream()));
-    stdIn = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
+    stdOut = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+    stdIn = new BufferedWriter(new OutputStreamWriter(pr.getOutputStream()));
   }
   public void preCache() {
     // Pre-caches the contents of a levelgraph database to a Bloom filter
@@ -24,7 +26,7 @@ class LevelGraphStreamer {
     stdIn.close();
   }
   public boolean contains(String triple) {
-    Pattern pattern = Pattern.compile("^(?:<([^>]+)>\s*){2}<?([^>]+)>?$");
+    Pattern pattern = Pattern.compile("^<([^>]+)>\\s+<([^>]+)>\\s+<?([^>]+)>?$");
     Matcher matcher = pattern.matcher(triple);
     if(matcher.matches()) {
       System.out.print(matcher.group(1)+" "+matcher.group(2)+" "+matcher.group(3));
