@@ -35,7 +35,7 @@ public class HdtConsolidator {
   private String makeFifo() {
     String fifoFile = generateFifoName(6);
     String mkFifoCmd = "mkfifo "+fifoFile;
-    Process p Runtime.getRuntime().exec(mkFifoCmd);
+    Process p = Runtime.getRuntime().exec(mkFifoCmd);
     int res = p.waitFor();
     return fifoFile;
   }
@@ -55,7 +55,7 @@ public class HdtConsolidator {
     /* Fourth, we generate another 'named pipe' to read in our HDT file,
        and we get its read stream. */
     String fifoFileFromHdt = makeFifo();
-    fifoFromHdt = new BufferedReader(new BufferedInputStream(new FileInputStream(fifoFileFromHdt)));
+    fifoFromHdt = new BufferedReader(new InputStreamReader(new FileInputStream(fifoFileFromHdt)));
 
     return ;
   }
