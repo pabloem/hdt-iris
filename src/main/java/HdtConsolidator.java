@@ -12,7 +12,8 @@ public class HdtConsolidator {
   private String removed_db;     // Our levelgraph with removed elements
   private String hdt_in;         // The HDT input file
   private String hdt_out;        // The resulting HDT file
-  private BufferedWriter fifo;   // Our intermediate FIFO
+  private BufferedWriter fifoToHdt;   // Our intermediate FIFO
+  private BufferedReader fifoFromHdt; // Our intermediate FIFO
 
   public HdtConsolidator(String added, String removed, 
                          String hdt, String output) {
@@ -28,22 +29,33 @@ public class HdtConsolidator {
     StringBuilder sb = new StringBuilder( len );
     for( int i = 0; i < len; i++ ) 
       sb.append( AB.charAt( rnd.nextInt(AB.length()) ) );
-    return sb.toString();
+    return "/tmp/"+sb.toString();
+  }
+
+  private String makeFifo() {
+    String fifoFile = generateFifoName(6);
+    String mkFifoCmd = "mkfifo "+fifoFile;
+    Process p Runtime.getRuntime().exec(mkFifoCmd);
+    int res = p.waitFor();
+    return fifoFile;
   }
 
   public void setupRun() throws Exception {
-    /* First, we create out 'named pipe', or fifo 
-    String fifoFile = "/tmp/"+generateFifoName(6);
-    String mkFifoCmd = "mkfifo "+fifoFile;
-    Process p Runtime.getRuntime().exec(mkFifoCmd);
-    int res = p.waitFor();*/
+    /* First, we create out 'named pipe', or fifo for generating HDT file
+       String fifoFileToHdt = makeFifo();*/
+
 
     /* Second, we get a write stream to our named pipe 
-       fifo = new BufferedWriter(new BufferedOutputStream(new FileOutputStream(fifoFile)));*/
+       fifoToHdt = new BufferedWriter(new BufferedOutputStream(new FileOutputStream(fifoFileToHdt)));*/
     
     /* Third, we start executing the rdf2hdt process 
     String rdf2hdtCmd = rdf2hdt + " " + fifoFile + " " + hdt_out;
     Process p Runtime.getRuntime().exec(rdf2hdtCmd);*/
+
+    /* Fourth, we generate another 'named pipe' to read in our HDT file,
+       and we get its read stream. */
+    String fifoFileFromHdt = makeFifo();
+    fifoFromHdt = new BufferedReader(new BufferedInputStream(new FileInputStream(fifoFileFromHdt)));
 
     return ;
   }
@@ -55,8 +67,8 @@ public class HdtConsolidator {
 
   public void run() throws Exception {
     String cmdRemoved = levelStreamer + " " + removed_db;
-    setupRun();
-    addSourceHdt();
+    //setupRun();
+    //addSourceHdt();
     appendAdded();
     finalize();
   }
@@ -82,7 +94,7 @@ public class HdtConsolidator {
   private void appendAdded() {
     LevelGraphStreamer lgAdd = new LevelGraphStreamer(added_db);
     lgAdd.init();
-    lgAdd.startQuery("","","");
+    lgAdd.startQuery("");
     String line = "";			
     while ((line = lgAdd.getTriple())!= null) {
       appendToHdt(line);

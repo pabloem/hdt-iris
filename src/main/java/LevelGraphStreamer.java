@@ -34,14 +34,9 @@ class LevelGraphStreamer {
     }
   }
   public boolean contains(String triple) {
-    Pattern pattern = Pattern.compile("^<([^>]+)>\\s+<([^>]+)>\\s+<?([^>]+)>?$");
-    Matcher matcher = pattern.matcher(triple);
-    if(matcher.matches()) {
-      System.out.print(matcher.group(1)+" "+matcher.group(2)+" "+matcher.group(3));
-      startQuery(matcher.group(1),matcher.group(2),matcher.group(3));
-    } else {
-      /* Gotta error out */
-    }
+    System.out.print(triple);
+    startQuery(triple);
+
     if(getTriple() == null) return false;
     getTriple(); // Get the last line
     return true;
@@ -59,13 +54,17 @@ class LevelGraphStreamer {
     }
     return line;
   }
+  public void startQuery(String query) {
+    try{ 
+      stdIn.write(query+"\n");
+      stdIn.flush();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
   public void startQuery(String subject,String predicate,String object) {
     try{ 
-      stdIn.write(subject+"\n");
-      stdIn.flush();
-      stdIn.write(predicate+"\n");
-      stdIn.flush();
-      stdIn.write(object+"\n");
+      stdIn.write(subject+" "+predicate+" "+object+" .\n");
       stdIn.flush();
     } catch (Exception e) {
       e.printStackTrace();
