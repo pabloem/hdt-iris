@@ -1,23 +1,25 @@
+import java.io.*;
+import java.util.*;
 class LevelGraphStreamer {
   public static final String levelStreamer = "../../../levelStreamerLine.js";
   private String streamFile;
   private BufferedReader stdOut;
   private BufferedWriter stdIn;
   private Process pr;
-  public LevelGraphStreamer(file) {
+  public LevelGraphStreamer(String file) {
     streamFile = file;
   }
-  public init() {
+  public void init() {
     String cmd = levelStreamer + " " + streamFile;
     pr = Runtime.getRuntime().exec(cmd);
     stdOut = new BufferedReader(new InputStreamReader(p.getInputStream()));
     stdIn = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
   }
-  public preCache() {
+  public void preCache() {
     // Pre-caches the contents of a levelgraph database to a Bloom filter
     // TODO implement
   }
-  public finalize() {
+  public void finalize() {
     stdOut.close();
     stdIn.close();
   }
@@ -31,7 +33,7 @@ class LevelGraphStreamer {
       /* Gotta error out */
     }
     if(getTriple() == null) return false;
-    getTriple() // Get the last line
+    getTriple(); // Get the last line
     return true;
   }
   public String getTriple() {
