@@ -13,17 +13,25 @@ class LevelGraphStreamer {
   }
   public void init() {
     String cmd = levelStreamer + " " + streamFile;
-    pr = Runtime.getRuntime().exec(cmd);
-    stdOut = new BufferedReader(new InputStreamReader(pr.getInputStream()));
-    stdIn = new BufferedWriter(new OutputStreamWriter(pr.getOutputStream()));
+    try {
+      pr = Runtime.getRuntime().exec(cmd);
+      stdOut = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+      stdIn = new BufferedWriter(new OutputStreamWriter(pr.getOutputStream()));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
   public void preCache() {
     // Pre-caches the contents of a levelgraph database to a Bloom filter
     // TODO implement
   }
   public void finalize() {
-    stdOut.close();
-    stdIn.close();
+    try {
+      stdOut.close();
+      stdIn.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
   public boolean contains(String triple) {
     Pattern pattern = Pattern.compile("^<([^>]+)>\\s+<([^>]+)>\\s+<?([^>]+)>?$");
@@ -39,7 +47,12 @@ class LevelGraphStreamer {
     return true;
   }
   public String getTriple() {
-    String line = stdOut.readLine();
+    String line;
+    try {
+      line = stdOut.readLine();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     if(line.length() < 5) {
       // A string of less than 5 characters can not be a triple.
       return null;
