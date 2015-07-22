@@ -63,14 +63,14 @@ public class HdtConsolidator {
 
   private void addSourceHdt() {
     String cmdHdt = hdtSearch+ " "+hdt_in;
-    LevelGraphStreamer rmvDb = new LevelGraphStreamer(removed_db);
-    rmvDb.init();
-    rmvDb.preCache();
+    LevelGraphStreamer lgRmv = new LevelGraphStreamer(removed_db);
+    lgRmv.init();
+    lgRmv.preCache();
     try {
       Process p = Runtime.getRuntime().exec(cmdHdt);
       BufferedReader addedOut = new BufferedReader(new InputStreamReader(p.getInputStream()));
       String line = "";			
-      while ((line = lgAdd.getTriple())!= null) {
+      while ((line = lgRmv.getTriple())!= null) {
         if(rmvDb.contains(line)) continue;
         appendToHdt(line);
       }
