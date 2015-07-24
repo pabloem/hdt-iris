@@ -34,7 +34,6 @@ class LevelGraphStreamer {
     }
   }
   public boolean contains(String triple) {
-    System.out.print(triple);
     startQuery(triple);
 
     if(getTriple() == null) return false;

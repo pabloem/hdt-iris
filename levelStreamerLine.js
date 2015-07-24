@@ -6,7 +6,7 @@ var levelup = require('levelup'),
 
 var args = process.argv.slice(2);
 if (args.length < 1) {
-  console.log('usage: levelStreamer database [subject predicate object]');
+  console.log('usage: levelStreamer database');
   return process.exit(1);
 }
 
@@ -20,7 +20,6 @@ var rl = readline.createInterface({
 var parser = N3.Parser(/*{format: 'N-Triples'}*/);
 var writer = N3.Writer({format: 'N-Triples'});
 var counter = 0,
-attList = ['subject','predicate','object'],
 query = {};
 rl.on('line',function(line) {
   if(line == '') {
