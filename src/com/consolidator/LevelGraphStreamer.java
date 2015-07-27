@@ -1,14 +1,16 @@
+package com.consolidator;
 import java.io.*;
 import java.util.*;
 import java.util.regex.*;
 
 class LevelGraphStreamer {
-  public static final String levelStreamer = "../../../levelStreamerLine.js";
+  private String levelStreamer;
   private String streamFile;
   private BufferedReader stdOut;
   private BufferedWriter stdIn;
   private Process pr;
-  public LevelGraphStreamer(String file) {
+  public LevelGraphStreamer(String file, String executable) {
+    levelStreamer = executable;
     streamFile = file;
   }
   public void init() {
