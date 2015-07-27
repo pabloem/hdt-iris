@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "n3": "^0.4.0",
+    "levelup": "1.2.1",
+    "leveldown":"1.2.2",
+    "levelgraph": "1.0.0",
+    "bloem": "^0.2.4",
+    "readline":"^0.0.8"
+  }
+}
