@@ -1,2 +1,2 @@
 #!/bin/bash
-java -classpath './:../lib/*:../conf/' consolidate $*
+java -classpath './:bin/:./lib/:../lib/*:../conf/:./conf/' consolidate $*
