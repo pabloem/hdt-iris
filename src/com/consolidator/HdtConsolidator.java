@@ -16,6 +16,7 @@ public class HdtConsolidator {
   private BufferedWriter fifoToHdt;   // Our intermediate FIFO
   private BufferedWriter testFile;
   private BufferedReader fifoFromHdt; // Our intermediate FIFO
+  private String fifoFileToHdt;
 
   private String rdf2hdt;
   private String hdt2rdf;
@@ -75,7 +76,7 @@ public class HdtConsolidator {
 
   public void setupRun() throws Exception {
     /* First, we create out 'named pipe', or fifo for generating HDT file */
-    String fifoFileToHdt = makeFifo();
+    fifoFileToHdt = makeFifo();
 
     /* Second, we start executing the rdf2hdt process */
     String rdf2hdtCmd = rdf2hdt + " " + fifoFileToHdt + " " + hdt_out;
@@ -91,12 +92,14 @@ public class HdtConsolidator {
     String fifoFileFromHdt = makeFifo();
     String cmdHdt = hdt2rdf+ " "+hdt_in+" "+fifoFileFromHdt;
     Process pr = Runtime.getRuntime().exec(cmdHdt);
+    System.out.println("Executing: "+cmdHdt);
     fifoFromHdt = new BufferedReader(new InputStreamReader(new FileInputStream(fifoFileFromHdt)));
+    System.out.println("Ready to go!");
     return ;
   }
 
   public void finalize() throws IOException {
-    //fifoToHdt.newLine();
+    System.out.println("Finalizing.");
     fifoToHdt.close();
     testFile.close();
     fifoFromHdt.close();
@@ -107,6 +110,14 @@ public class HdtConsolidator {
     addSourceHdt();
     appendAdded();
     finalize();
+    finalizingHack();
+  }
+
+  /* HACK. I am using this because simply closing the buffered writer is not working */
+  private void finalizingHack() throws Exception {
+    ProcessBuilder pb = new ProcessBuilder(new String[]{"bash", "-c", "echo . >> "+fifoFileToHdt});
+    Process p = pb.start();
+    p.waitFor();
   }
 
   private void addSourceHdt() {
