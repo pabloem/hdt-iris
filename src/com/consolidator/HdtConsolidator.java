@@ -1,19 +1,25 @@
 /*
  * */
+package com.consolidator;
 import java.io.*;
 import java.util.*;
 
 public class HdtConsolidator {
-  public static final String rdf2hdt = "../../../rdf2hdt";
-  public static final String levelStreamer = "../../../levelStreamerLine.js";
-  public static final String hdt2rdf= "../../../hdt2rdf";
+  public static final String defaultRdf2hdt = "./rdf2hdt -f ntriples";
+  public static final String defaultHdt2rdf= "./hdt2rdf";
+  public static final String defaultLevelStreamer = "./levelStreamerLine.js";
 
   private String added_db;       // Our levelgraph with added elements
   private String removed_db;     // Our levelgraph with removed elements
   private String hdt_in;         // The HDT input file
   private String hdt_out;        // The resulting HDT file
   private BufferedWriter fifoToHdt;   // Our intermediate FIFO
+  private BufferedWriter testFile;
   private BufferedReader fifoFromHdt; // Our intermediate FIFO
+
+  private String rdf2hdt;
+  private String hdt2rdf;
+  private String levelStreamer;
 
   public HdtConsolidator(String added, String removed, 
                          String hdt, String output) {
@@ -21,6 +27,33 @@ public class HdtConsolidator {
     removed_db = removed;
     hdt_in = hdt;
     hdt_out = output;
+    loadConfiguration();
+  }
+
+  private void loadConfiguration() {
+    Properties prop = new Properties();
+    InputStream input = null;
+    try {
+      String filename = "config.properties";
+      input = getClass().getClassLoader().getResourceAsStream(filename);
+      if(input == null) {
+        defaultConfiguration();
+        return ;
+      }
+      prop.load(input);
+    } catch (IOException ex) {
+      defaultConfiguration();
+    }
+    levelStreamer = prop.getProperty("levelStreamer");
+    hdt2rdf = prop.getProperty("hdt2rdf");
+    rdf2hdt = prop.getProperty("rdf2hdt");
+  }
+
+  private void defaultConfiguration() {
+    System.out.println("Unable to find config.properties. Using default values.");
+    rdf2hdt = defaultRdf2hdt;
+    hdt2rdf = defaultHdt2rdf;
+    levelStreamer = defaultLevelStreamer;
   }
 
   private String generateFifoName(int len) {
@@ -37,7 +70,6 @@ public class HdtConsolidator {
     String mkFifoCmd = "mkfifo "+fifoFile;
     Process p = Runtime.getRuntime().exec(mkFifoCmd);
     int res = p.waitFor();
-    System.out.println("Fifo: "+fifoFile);
     return fifoFile;
   }
 
@@ -52,6 +84,7 @@ public class HdtConsolidator {
 
     /* Third, we get a write stream to our named pipe  */
     fifoToHdt = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fifoFileToHdt)));
+    testFile = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("testFile.rdf")));
     
     /* Fourth, we generate another 'named pipe' to read in our HDT file,
        and we get its read stream. */
@@ -63,8 +96,9 @@ public class HdtConsolidator {
   }
 
   public void finalize() throws IOException {
-    fifoToHdt.newLine();
+    //fifoToHdt.newLine();
     fifoToHdt.close();
+    testFile.close();
     fifoFromHdt.close();
   }
 
@@ -77,8 +111,9 @@ public class HdtConsolidator {
 
   private void addSourceHdt() {
     String line = "";
-    LevelGraphStreamer lgRmv = new LevelGraphStreamer(removed_db);
+    LevelGraphStreamer lgRmv = new LevelGraphStreamer(removed_db,levelStreamer);
     lgRmv.init();
+    lgRmv.preCache();
     try {
     while((line = fifoFromHdt.readLine()) != null) {
       if(lgRmv.contains(line)) continue;
@@ -90,7 +125,7 @@ public class HdtConsolidator {
   }
 
   private void appendAdded() {
-    LevelGraphStreamer lgAdd = new LevelGraphStreamer(added_db);
+    LevelGraphStreamer lgAdd = new LevelGraphStreamer(added_db,levelStreamer);
     lgAdd.init();
     lgAdd.startQuery("");
     String line = "";			
@@ -101,10 +136,9 @@ public class HdtConsolidator {
   }
 
   private void appendToHdt(String triple) {
-    // TODO - implement. Add line to HDT file.
-    System.out.println(triple);
     try {
       fifoToHdt.write(triple+"\n");
+      testFile.write(triple+"\n");
     } catch (IOException e) {
       e.printStackTrace();
     }
