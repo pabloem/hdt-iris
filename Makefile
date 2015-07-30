@@ -3,6 +3,7 @@ PACKAGES = com/consolidator
 
 # Java compiler
 JAVAC = javac
+JAR = ./Java-BloomFilter/dist/*
 
 # Directory for compiled binaries
 # - trailing slash is important!
@@ -13,7 +14,7 @@ BIN = ./bin/
 SRC = ./src/
 
 # Java compiler flags
-JAVAFLAGS = -g -d $(BIN) -cp $(SRC)
+JAVAFLAGS = -g -d $(BIN) -sourcepath $(SRC) -cp "$(JAR)"
 
 # Creating a .class file
 COMPILE = $(JAVAC) $(JAVAFLAGS)

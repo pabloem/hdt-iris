@@ -1,0 +1,3 @@
+[submodule "Java-BloomFilter"]
+	path = Java-BloomFilter
+	url = https://github.com/MagnusS/Java-BloomFilter.git

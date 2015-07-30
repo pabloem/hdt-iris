@@ -17,6 +17,7 @@ public class HdtConsolidator {
   private BufferedWriter testFile;
   private BufferedReader fifoFromHdt; // Our intermediate FIFO
   private String fifoFileToHdt;
+  private int addedTriples;
 
   private String rdf2hdt;
   private String hdt2rdf;
@@ -147,6 +148,10 @@ public class HdtConsolidator {
   }
 
   private void appendToHdt(String triple) {
+    addedTriples += 1;
+    if(addedTriples % 100000 == 0){
+      System.out.println("Added "+addedTriples+" triples.");
+    }
     try {
       fifoToHdt.write(triple+"\n");
       testFile.write(triple+"\n");
