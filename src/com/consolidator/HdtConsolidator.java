@@ -86,7 +86,7 @@ public class HdtConsolidator {
 
     /* Third, we get a write stream to our named pipe  */
     fifoToHdt = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fifoFileToHdt)));
-    testFile = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("testFile.rdf")));
+    //testFile = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("testFile.rdf")));
     
     /* Fourth, we generate another 'named pipe' to read in our HDT file,
        and we get its read stream. */
@@ -102,7 +102,7 @@ public class HdtConsolidator {
   public void finalize() throws IOException {
     System.out.println("Finalizing.");
     fifoToHdt.close();
-    testFile.close();
+    //testFile.close();
     fifoFromHdt.close();
   }
 
@@ -154,7 +154,7 @@ public class HdtConsolidator {
     }
     try {
       fifoToHdt.write(triple+"\n");
-      testFile.write(triple+"\n");
+      //testFile.write(triple+"\n");
     } catch (IOException e) {
       e.printStackTrace();
     }
