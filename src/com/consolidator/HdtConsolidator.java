@@ -19,6 +19,8 @@ public class HdtConsolidator {
   private String fifoFileToHdt;
   private int addedTriples;
 
+  private Process rdf2hdtProcess;
+
   private String rdf2hdt;
   private String hdt2rdf;
   private String levelStreamer;
@@ -81,8 +83,11 @@ public class HdtConsolidator {
 
     /* Second, we start executing the rdf2hdt process */
     String rdf2hdtCmd = rdf2hdt + " " + fifoFileToHdt + " " + hdt_out;
-    Process p = Runtime.getRuntime().exec(rdf2hdtCmd);
+    rdf2hdtProcess = Runtime.getRuntime().exec(rdf2hdtCmd);
     System.out.println("Executing: "+rdf2hdtCmd);
+    new Thread(new Reader(rdf2hdtProcess.getErrorStream(), System.err)).start();
+    new Thread(new Reader(rdf2hdtProcess.getInputStream(), System.out)).start();
+
 
     /* Third, we get a write stream to our named pipe  */
     fifoToHdt = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fifoFileToHdt)));
@@ -119,6 +124,7 @@ public class HdtConsolidator {
     ProcessBuilder pb = new ProcessBuilder(new String[]{"bash", "-c", "echo . >> "+fifoFileToHdt});
     Process p = pb.start();
     p.waitFor();
+    rdf2hdtProcess.waitFor();
   }
 
   private void addSourceHdt() {
