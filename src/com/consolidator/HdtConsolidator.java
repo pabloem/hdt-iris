@@ -121,8 +121,7 @@ public class HdtConsolidator {
 
   /* HACK. I am using this because simply closing the buffered writer is not working */
   private void finalizingHack() throws Exception {
-    ProcessBuilder pb = new ProcessBuilder(new String[]{"bash", "-c", "echo . >> "+fifoFileToHdt});
-    Process p = pb.start();
+    Process p = Runtime.getRuntime().exec("touch "+fifoFileToHdt);
     p.waitFor();
     rdf2hdtProcess.waitFor();
   }
@@ -155,14 +154,12 @@ public class HdtConsolidator {
 
   private void appendToHdt(String triple) {
     addedTriples += 1;
-    if(addedTriples % 100000 == 0){
-      System.out.println("Added "+addedTriples+" triples.");
-    }
     try {
       fifoToHdt.write(triple+"\n");
       //testFile.write(triple+"\n");
     } catch (IOException e) {
       e.printStackTrace();
+      System.exit(0);
     }
   }
 };

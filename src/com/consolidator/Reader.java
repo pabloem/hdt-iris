@@ -7,8 +7,8 @@ import java.util.*;
 class Reader implements Runnable
 {
 public Reader (InputStream istrm, OutputStream ostrm) {
-      istrm = istrm;
-      ostrm = ostrm;
+      this.istrm = istrm;
+      this.ostrm = ostrm;
   }
   public void run() {
       try
@@ -24,6 +24,6 @@ public Reader (InputStream istrm, OutputStream ostrm) {
               //e.printStackTrace();
       }
   }
-  private OutputStream ostrm;
-  private InputStream istrm;
+  private final OutputStream ostrm;
+  private final InputStream istrm;
 }
